@@ -1,6 +1,9 @@
-var story = {
+var variables = {
   name: "",
-  currentScene: "goHome",
+}
+
+var story = {
+  currentScene: "intro",
   intro: {
     title: 'Story Time with Kevin',
     story: "",
@@ -14,12 +17,12 @@ var story = {
   },
   attack: {
     title: 'Chapter one',
-    story: `Once upon a time, the village of Onionland lived in peace. Until one day, it was attacked by the evil King Bishop. The Mayor of Onionland, said there's only one person who can save us, our hero ${this.name}.`,
+    story: `Once upon a time, the village of Onionland lived in peace. Until one day, it was attacked by the evil King Bishop. The Mayor of Onionland, said there's only one person who can save us, our hero ${variables.name}.`,
     choices: [
       {
       type: 'radio',
       value: "Yes, I'm ready to accept!",
-      destination: 'start'
+      destination: 'battle'
       },
       {
       type: 'radio',
@@ -28,26 +31,37 @@ var story = {
       }
     ]
   },
-  start: {
-    title: 'The journey begins',
-    story: `${this.name} is doing great`,
+  battle: {
+    title: 'The epic battle for Onionland!',
+    story: `It's King Bishop, he looks pretty scary...`,
     choices: [
       {
       type: 'radio',
-      value: "Go to blah blah!",
-      destination: 'intro'
+      value: "Attack him with a sword.",
+      destination: 'sword'
       },
       {
       type: 'radio',
-      value: "Meh, think I'd rather just play video games instead.",
-      destination: 'goHome'
+      value: "Attack him with a candlestick.",
+      destination: 'candleStick'
       }
     ]
   },
+  sword: {
+    title: "You've saved Onionlnad!",
+    story: "King Bishop is defeated and Onionland is safe!!!! You're so popular now.",
+    defaultDestination: "intro",
+  },
+  candleStick: {
+    title: "A candlestick, seriously?",
+    story: "That's not even a real weapon. King Bishop easily defeated you. I really just don't understand why you would pick a candlestick over a sword.",
+    defaultDestination: "intro"
+  },
   goHome: {
-    title: 'ZZZZZ',
-    story: "Ah, yeah, man, this is great.",
-    defaultDestination: 'intro'
+    title: "Back at home!",
+    story: "Yes, you're back in comfort of your own home. Don't worry about it, someone else took care of the problem. No need to at all to feel guilty...",
+    defaultDestination: 'intro',
+    buttonText: "Let's try this again"
   }
 }
 
@@ -57,12 +71,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function renderScene() {
   var content = document.querySelector('#content');
-  console.log(story.currentScene)
+  
   content.innerHTML = `
     <h1>${story[story.currentScene].title}</h1>
     <p>${story[story.currentScene].story}</p>
     ${setInputs(story[story.currentScene].choices)}
-    <button id = "submitButton">Go on</button>
+    <button id = "submitButton">Next</button>
     ` 
   var button = document.querySelector("#submitButton");
   button.addEventListener("click", function() {
@@ -75,7 +89,7 @@ function getInputs() {
   for (var i = 0; i < inputs.length; i++) {
     var input = inputs[i];
     if (input.type == "text") {
-      story[input.getAttribute("data-variable-to-set")] = input.value;
+      variables[input.getAttribute("data-variable-to-set")] = input.value;
     } else {
       if (input.checked) {
         story.currentScene = input.getAttribute("data-destination");
